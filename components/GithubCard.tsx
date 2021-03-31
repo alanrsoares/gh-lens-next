@@ -8,7 +8,7 @@ import {
   GoGlobe,
 } from "react-icons/go";
 
-import { Viewer } from "model/types";
+import { Viewer } from "lib/github-client/types";
 
 import CenteredWithIcon from "./CenteredWithIcon";
 

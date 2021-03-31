@@ -1,5 +1,5 @@
-import { useGithubAccessToken, useGithubQuery } from "lib/hooks";
-import type { Viewer } from "model/types";
+import { useGithubAccessToken, useViewer } from "lib/github-client/hooks";
+import type { Viewer } from "lib/github-client/types";
 
 import Layout from "components/Layout";
 import GithubCard from "components/GithubCard";
@@ -10,9 +10,7 @@ export default function Home() {
     redirectTo: "/login",
   });
 
-  const { data: viewer, isLoading: isLoadingViewer } = useGithubQuery<Viewer>(
-    "/user"
-  );
+  const { data: viewer, isLoading: isLoadingViewer } = useViewer();
 
   if (isLoadingViewer) {
     return (
@@ -24,7 +22,7 @@ export default function Home() {
 
   return (
     <Layout pageTitle="Github Lens - profile">
-      <div className="flex-1 block md:pt-24 sm:pt-18 pt-0 items-center justify-center">
+      <div className="md:-mt-16">
         {viewer && <GithubCard viewer={viewer} />}
       </div>
     </Layout>

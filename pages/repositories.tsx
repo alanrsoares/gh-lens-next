@@ -1,15 +1,17 @@
-import { useGithubAccessToken, useGithubQuery } from "lib/hooks";
-import { Repository, Viewer } from "model/types";
+import {
+  useGithubAccessToken,
+  useGithubQuery,
+  useUserRepositories,
+} from "lib/github-client/hooks";
+import type { Repository, Viewer } from "lib/github-client/types";
 
 import Layout from "components/Layout";
 import Loading from "components/Loading";
 
-const Repos = ({ login }: { login: string }) => {
-  const { data: repos, isLoading: isLoadingRepos } = useGithubQuery<
-    Repository[]
-  >(`/users/${login}/repos`);
+const Repos: React.FC<{ githubLogin: string }> = ({ githubLogin }) => {
+  const { data: repos, isLoading } = useUserRepositories(githubLogin);
 
-  if (isLoadingRepos) {
+  if (isLoading) {
     return <Loading>Loading repos...</Loading>;
   }
 
@@ -41,7 +43,9 @@ export default function Repositories() {
 
   return (
     <Layout pageTitle="Github Lens - Repositories">
-      <div className="mx-4">{viewer && <Repos login={viewer?.login} />}</div>
+      <div className="mx-4">
+        {viewer && <Repos githubLogin={viewer?.login} />}
+      </div>
     </Layout>
   );
 }

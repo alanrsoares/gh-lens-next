@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import Router from "next/router";
 import { useQuery } from "react-query";
 
-import githubClient from "lib/github-client";
+import { getGithubResource } from "lib/github-client";
 import { useContainer } from "contexts/auth";
+import { Repository, Viewer } from "./types";
 
 export function useGithubAccessToken(ctx?: { redirectTo?: string }) {
   const [{ token }, actions] = useContainer();
@@ -24,16 +25,6 @@ export function useGithubAccessToken(ctx?: { redirectTo?: string }) {
   return { token };
 }
 
-async function getGithubResource<T>(path: string, token: string) {
-  const result = await githubClient.get<T>(path, {
-    headers: {
-      Authorization: `token ${token}`,
-    },
-  });
-
-  return result.data;
-}
-
 export function useGithubQuery<T, E = Error>(path: string) {
   const [state] = useContainer();
   const fetcher = () => getGithubResource<T>(path, state.token);
@@ -42,3 +33,8 @@ export function useGithubQuery<T, E = Error>(path: string) {
     enabled: state.isAuthenticated,
   });
 }
+
+export const useViewer = () => useGithubQuery<Viewer>("/user");
+
+export const useUserRepositories = (githubLogin: string) =>
+  useGithubQuery<Repository[]>(`/users/${githubLogin}/repos`);
