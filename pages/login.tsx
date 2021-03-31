@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { GoMarkGithub } from "react-icons/go";
 
 import { GH_AUTHORIZE_URL } from "lib/github-oauth";
 import { useContainer } from "contexts/auth";
 
 import Layout from "components/Layout";
-import SignInWithGithubLink from "components/SignInWithGithubLink";
 
 const Login: React.FC = () => {
   const [state, actions] = useContainer();
@@ -40,7 +40,12 @@ const Login: React.FC = () => {
 
   return (
     <Layout>
-      <SignInWithGithubLink href={GH_AUTHORIZE_URL} />
+      <a
+        className="p-4 bg-gray-800 rounded-md text-white flex items-center"
+        href={GH_AUTHORIZE_URL}
+      >
+        <GoMarkGithub className="mr-2" /> Sign in with Github
+      </a>
     </Layout>
   );
 };

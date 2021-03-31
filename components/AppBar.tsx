@@ -1,7 +1,7 @@
 import { useContainer } from "contexts/auth";
 import { useViewer } from "lib/github-client";
 
-const AppBar: React.FC<{}> = () => {
+const AppBar: React.FC = () => {
   const [state, actions] = useContainer();
   const { data: viewer } = useViewer();
 
