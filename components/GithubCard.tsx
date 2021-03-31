@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import Image from "next/image";
 
 import {
   GoRepo,
@@ -28,11 +29,12 @@ interface Props {
 
 const GithubCard: React.FC<Props> = ({ viewer }) => (
   <div className="md:border md:border-black md:rounded-lg md:h-auto p-4 bg-gray-800 text-white h-screen max-w-sm mx-auto">
-    <figure className="p-2">
-      <img
+    <figure className="md:h-36 md:w-36 h-32 w-32 rounded-full mx-auto overflow-hidden">
+      <Image
         src={viewer.avatar_url}
         alt="Github avatar"
-        className="md:h-36 md:w-36 h-32 w-32 rounded-full mx-auto"
+        height={144} // 9 rem = h-36
+        width={144} // 9 rem = w-36
       />
     </figure>
     <div className="py-2 text-center">
