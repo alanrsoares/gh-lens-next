@@ -1,37 +1,8 @@
-import { useQuery } from "react-query";
-
-import { useGithubAccessToken } from "lib/hooks";
-import githubClient from "lib/github-client";
+import { useGithubAccessToken, useGithubQuery } from "lib/hooks";
+import { Repository, Viewer } from "model/types";
 
 import Layout from "components/Layout";
-import { useContainer } from "contexts/auth";
-import { Repository } from "model/types";
-
-interface Viewer {
-  name: string;
-  login: string;
-}
-
-async function getGithubResource<T>(path: string, token: string) {
-  const result = await githubClient.get<T>(path, {
-    headers: {
-      Authorization: `token ${token}`,
-    },
-  });
-
-  return result.data;
-}
-
-function useGithubQuery<T, E = Error>(path: string) {
-  const { token } = useGithubAccessToken({ redirectTo: "/login" });
-  const fetcher = () => getGithubResource<T>(path, token);
-
-  return useQuery<T, E>(path, fetcher, {
-    enabled: Boolean(token),
-  });
-}
-
-const useViewer = () => useGithubQuery<Viewer>("/user");
+import Loading from "components/Loading";
 
 const Repos = ({ login }: { login: string }) => {
   const { data: repos, isLoading: isLoadingRepos } = useGithubQuery<
@@ -39,14 +10,22 @@ const Repos = ({ login }: { login: string }) => {
   >(`/users/${login}/repos`);
 
   if (isLoadingRepos) {
-    return <div>Loading repos...</div>;
+    return <Loading>Loading repos...</Loading>;
   }
 
   return (
     <div>
       <ul className="max-h-96 overflow-y-scroll">
         {repos?.map((x) => (
-          <li key={x.id}>{x.name}</li>
+          <li key={x.id}>
+            <article className="bg-gray-100 my-4 p-4 rounded-md">
+              <header>
+                {x.name}
+                <div>{x.description}</div>
+              </header>
+              <div></div>
+            </article>
+          </li>
         ))}
       </ul>
     </div>
@@ -58,12 +37,11 @@ export default function Repositories() {
     redirectTo: "/login",
   });
 
-  const { data: viewer } = useViewer();
+  const { data: viewer } = useGithubQuery<Viewer>("/user");
 
   return (
     <Layout pageTitle="Github Lens - Repositories">
-      Hello, {viewer?.name}
-      <div>{viewer && <Repos login={viewer?.login} />}</div>
+      <div className="mx-4">{viewer && <Repos login={viewer?.login} />}</div>
     </Layout>
   );
 }

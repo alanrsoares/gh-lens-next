@@ -34,10 +34,11 @@ async function getGithubResource<T>(path: string, token: string) {
   return result.data;
 }
 
-export function useGithubQuery<T, E = Error>(path: string, token: string) {
-  const fetcher = () => getGithubResource<T>(path, token);
+export function useGithubQuery<T, E = Error>(path: string) {
+  const [state] = useContainer();
+  const fetcher = () => getGithubResource<T>(path, state.token);
 
   return useQuery<T, E>(path, fetcher, {
-    enabled: Boolean(token),
+    enabled: state.isAuthenticated,
   });
 }

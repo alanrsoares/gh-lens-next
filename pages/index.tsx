@@ -1,33 +1,32 @@
-import Link from "next/link";
-
 import { useGithubAccessToken, useGithubQuery } from "lib/hooks";
 import type { Viewer } from "model/types";
 
 import Layout from "components/Layout";
-
-const useViewer = (token: string) => useGithubQuery<Viewer>("/user", token);
-
-const Authenticated: React.FC<{ token: string }> = ({ token }) => {
-  const { data: user, isLoading: isLoadingUser } = useViewer(token);
-
-  if (isLoadingUser) {
-    return <Layout pageTitle="Github Lens">Loading...</Layout>;
-  }
-
-  return (
-    <Layout pageTitle="Github Lens">
-      <div>Hello, {user?.name}</div>
-      <div>
-        <Link href="/repositories">View Repos</Link>
-      </div>
-    </Layout>
-  );
-};
+import GithubCard from "components/GithubCard";
+import Loading from "components/Loading";
 
 export default function Home() {
-  const { token } = useGithubAccessToken({
+  useGithubAccessToken({
     redirectTo: "/login",
   });
 
-  return <Authenticated token={token} />;
+  const { data: viewer, isLoading: isLoadingViewer } = useGithubQuery<Viewer>(
+    "/user"
+  );
+
+  if (isLoadingViewer) {
+    return (
+      <Layout pageTitle="Github Lens">
+        <Loading>Loading...</Loading>
+      </Layout>
+    );
+  }
+
+  return (
+    <Layout pageTitle="Github Lens - profile">
+      <div className="flex-1 block md:pt-24 sm:pt-18 pt-0 items-center justify-center">
+        {viewer && <GithubCard viewer={viewer} />}
+      </div>
+    </Layout>
+  );
 }

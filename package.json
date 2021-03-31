@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "ntl:dev": "ntl dev",
     "build": "next build",
     "start": "next start"
   },

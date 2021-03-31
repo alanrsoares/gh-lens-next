@@ -9,10 +9,15 @@ import Layout from "components/Layout";
 import SignInWithGithubLink from "components/SignInWithGithubLink";
 
 const Login: React.FC = () => {
-  const [_state, actions] = useContainer();
+  const [state, actions] = useContainer();
   const router = useRouter();
 
   useEffect(() => {
+    if (state.isAuthenticated) {
+      router.push("/");
+      return;
+    }
+
     async function task() {
       const { code } = router.query;
 
@@ -31,7 +36,7 @@ const Login: React.FC = () => {
     }
 
     task();
-  }, [router]);
+  }, [router, state.isAuthenticated]);
 
   return (
     <Layout>
