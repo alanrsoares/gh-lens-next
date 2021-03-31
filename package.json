@@ -9,7 +9,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@tailwindcss/forms": "^0.3.2",
     "axios": "^0.21.1",
     "next": "latest",
     "query-string": "^7.0.0",
